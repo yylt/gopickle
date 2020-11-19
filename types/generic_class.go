@@ -10,6 +10,8 @@ type GenericClass struct {
 }
 
 var _ PyNewable = &GenericClass{}
+var _ DictSetter = &GenericObject{}
+var _ PyDictSettable = &GenericObject{}
 
 type GenericObject struct {
 	Class           *GenericClass
@@ -20,9 +22,21 @@ func NewGenericClass(module, name string) *GenericClass {
 	return &GenericClass{Module: module, Name: name}
 }
 
+func (goj *GenericObject) Set(key, value interface{}) {
+	return
+}
+
+func (goj *GenericObject) PyDictSet(key, value interface{}) error {
+	return nil
+}
+
 func (g *GenericClass) PyNew(args ...interface{}) (interface{}, error) {
 	return &GenericObject{
 		Class:           g,
 		ConstructorArgs: args,
 	}, nil
+}
+
+func (g *GenericClass) Call(args ...interface{}) (interface{}, error) {
+	return g, nil
 }
